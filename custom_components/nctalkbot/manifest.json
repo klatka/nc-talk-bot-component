@@ -1,16 +1,9 @@
 {
     "domain": "nctalkbot",
     "name": "Nextcloud Talk Bot",
-    "version": "0.0.1",
-    "integration_type": "service",
+    "version": "2023.9.1",
     "documentation": "https://github.com/klatka/ha-nc_talk_bot",
     "issue_tracker": "https://github.com/klatka/ha-nc_talk_bot/issues",
-    "after_dependencies": ["http"],
     "codeowners": ["@klatka"],
-    "dependencies": [],
-    "iot_class": "cloud_push",
-    "loggers": [],
-    "requirements": [
-        "httpx"
-    ]
+    "iot_class": "cloud_push"
 }

@@ -1,2 +1,2 @@
 # Nextcloud Talk Bot
-Custom component for HACS to publish message from HA in Nextcloud Talk
+Custom component for Home Assistant to publish messages from HA to Nextcloud Talk
