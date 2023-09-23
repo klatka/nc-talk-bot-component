@@ -1,4 +1,4 @@
-# Nextcloud Talk - Bot Messages
+# Nextcloud Talk Bot
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
 Custom component for Home Assistant to publish messages from Home Assistant to a room in Nextcloud Talk.
@@ -15,6 +15,8 @@ Custom component for Home Assistant to publish messages from Home Assistant to a
     ```shell
     occ talk:bot:install "<name>" "<shared_secret>" "<webhook_url>"
     ```
+    Note: `webhook_url` must be a valid URL. Currently, you can choose whatever you want because it is not supported by this integration yet.
+
     Get the id of the created bot:
     ```shell
     occ talk:bot:list
@@ -28,11 +30,14 @@ Custom component for Home Assistant to publish messages from Home Assistant to a
     occ talk:bot:setup <bot_id> <room_token>
     ```
 
-2. Install this component in Home Assistant:
+3. Install this component in Home Assistant:
 
     Add this repository to HACS
+
     Install nctalkbot in HACS
+
     Restart Home Assistant
+
     Add this to your `configuration.yaml`:
     ```yaml
     notify:
@@ -42,7 +47,9 @@ Custom component for Home Assistant to publish messages from Home Assistant to a
         shared_secret: !secret nextcloud_talk_shared_secret
         room_token: !secret nextcloud_talk_room_token
     ```
+
     Add needed secrets in your `secrets.yaml`
+
     Restart Home Assistant again
 
 ## Usage

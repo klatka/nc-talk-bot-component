@@ -1,6 +1,6 @@
 {
     "domain": "nctalkbot",
-    "name": "Nextcloud Talk - Bot Messages",
+    "name": "Nextcloud Talk Bot",
     "version": "2023.9.2",
     "documentation": "https://github.com/klatka/ha-nc_talk_bot",
     "issue_tracker": "https://github.com/klatka/ha-nc_talk_bot/issues",
