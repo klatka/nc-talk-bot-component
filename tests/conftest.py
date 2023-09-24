@@ -15,6 +15,7 @@ from custom_components.nctalkbot.const import (
 def auto_enable_custom_integrations(enable_custom_integrations):
     yield
 
+
 @pytest.fixture
 def config():
     """Fixture for a nctalkbot configuration."""
