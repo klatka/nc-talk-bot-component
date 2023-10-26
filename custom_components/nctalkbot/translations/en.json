@@ -1,0 +1,31 @@
+{
+    "title": "Nextcloud Talk Bot",
+    "config": {
+        "abort": {
+            "already_configured": "Nextcloud Talk Bot is already configured",
+            "cloud_not_connected": "[%key:common::config_flow::abort::cloud_not_connected%]",
+            "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]",
+            "webhook_not_internet_accessible": "[%key:common::config_flow::abort::webhook_not_internet_accessible%]"
+        },
+        "error": {
+            "unknown": "Unexpected error"
+        },
+        "create_entry": {
+            "default": "Please create a bot in your Nextcloud instance.\n\nFill in the following info:\n\n- Webhook URL: `{webhook_url}`\n- Shared secret: `{shared_secret}`\n\nSee [the documentation](https://github.com/klatka/nc-talk-bot-component) on how to configure automations to handle incoming data."
+        },
+        "step": {
+            "user": {
+                "title": "Nextcloud Talk Bot Setup",
+                "description": "Please create a bot with the Webhook URL and secret displayed below in your Nextcloud instance.",
+                "data": {
+                    "webhook_id": "Webhook ID",
+                    "shared_secret": "Shared secret",
+                    "url": "URL of your Nextcloud instance"
+                },
+                "data_description": {
+                    "url": "Must start with https:// and end with /"
+                }
+            }
+        }
+    }
+}
