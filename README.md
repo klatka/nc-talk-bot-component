@@ -69,8 +69,10 @@ Base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 capabi
        name: nctalkbot
        url: !secret nextcloud_url
        shared_secret: !secret nextcloud_talk_shared_secret
-       room_token: !secret nextcloud_talk_room_token
+       room_default: !secret nextcloud_talk_room_token
    ```
+
+   Note: `room_default` is optional. If you don't set it here, you have to provide a target when calling the notify service.
 
    Add needed secrets in your `secrets.yaml`
 
