@@ -16,7 +16,7 @@
     "step": {
       "user": {
         "title": "Nextcloud Talk Bot Setup",
-        "description": "Please create a bot with the Webhook URL and secret displayed below in your Nextcloud instance.",
+        "description": "React to messages sent in this room and do some stuff like open the garage door if somebody is asking.",
         "data": {
           "webhook_id": "Webhook ID",
           "shared_secret": "Shared secret",

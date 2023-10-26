@@ -31,7 +31,9 @@ Base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 capabi
 
 ### Send messages only (One-way communication)
 
-2. Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
+2. Generate a 128 chars hex string to use as secret (minimum is 40 chars).
+
+3. Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
 
    Use [occ](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html) to create a new bot:
 
@@ -59,7 +61,7 @@ Base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 capabi
    occ talk:bot:setup <bot_id> <room_token>
    ```
 
-3. Add this to your `configuration.yaml`:
+4. Add this to your `configuration.yaml`:
 
    ```yaml
    notify:
@@ -141,6 +143,7 @@ Every time something happens in the Nextcloud Talk room, the webhook will be tri
 After verifying that this is a valid message from an authorized bot the event `nctalkbot_webhook_received` will be fired.
 
 The content of the fired event looks like this:
+
 ```
 event_type: nctalkbot_webhook_received
 data:
@@ -169,6 +172,7 @@ context:
 ```
 
 At this point, you can create plenty of automation for this webhook event:
+
 - If the message is `open garage` -> open garage in Home Assistant
 - Feed assistants with the message to let them handle it
 - ...
