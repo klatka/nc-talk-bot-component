@@ -12,13 +12,9 @@ from custom_components.nctalkbot.const import (
     CONF_ROOM_TOKENS,
 )
 
-# Tests in the dev enviromentment use the pytest_homeassistant_custom_component instead of
-# a cloned HA core repo for a simple and clean structure. To still test against a HA core
-# clone (e.g. the dev branch for which no pytest_homeassistant_custom_component exists
-# because HA does not publish dev snapshot packages), set the HA_CLONE env variable.
+
 if "HA_CLONE" in os.environ:
-    # Rewire the testing package to the cloned test modules. See the test `Dockerfile`
-    # for setup details.
+    # Rewire the testing package to the cloned test modules
     sys.modules["pytest_homeassistant_custom_component"] = __import__("tests")
 
 

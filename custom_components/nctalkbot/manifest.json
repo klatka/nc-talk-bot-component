@@ -3,10 +3,12 @@
   "name": "Nextcloud Talk Bot",
   "codeowners": ["@klatka"],
   "config_flow": true,
+  "dependencies": [],
   "documentation": "https://github.com/klatka/ha-nc_talk_bot",
   "integration_type": "service",
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/klatka/ha-nc_talk_bot/issues",
   "loggers": ["custom_components.nctalkbot"],
+  "requirements": [],
   "version": "0.2.0"
 }

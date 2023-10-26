@@ -10,6 +10,7 @@ import httpx
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class TalkBot:
     """A class that implements the TalkBot functionality."""
 
@@ -51,7 +52,9 @@ class TalkBot:
         }
         url = self.nc_url + "/ocs/v2.php/apps/spreed/api/v1/bot" + url_suffix
 
-        _LOGGER.debug("Sending %s with header %s to %s", hmac_sign, headers, url)
+        _LOGGER.debug(
+            "Sending %s with header %s to %s", hmac_sign, headers, url
+        )
 
         async with httpx.AsyncClient() as client:
             r = await client.post(
@@ -62,7 +65,9 @@ class TalkBot:
 
         return r
 
-    def sign_data(self, data_to_sign: str, secret: str, random: str) -> hmac.HMAC:
+    def sign_data(
+        self, data_to_sign: str, secret: str, random: str
+    ) -> hmac.HMAC:
         """Sign data with the given secret and return the HMAC."""
         hmac_sign = hmac.new(
             secret.encode("UTF-8"),

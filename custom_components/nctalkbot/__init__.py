@@ -23,17 +23,6 @@ async def handle_webhook(
     assert hass is not None
     data = hass.data[DOMAIN]
 
-    _LOGGER.debug(
-        "Received webhook from Nextcloud Talk Bot id=%s, config=%s, headers=%s, body=%s",
-        webhook_id,
-        data,
-        request.headers,
-        request.text,
-    )
-
-    if webhook_id in data[CONF_WEBHOOK_ID]:
-        return Response(status=410)
-
     url = data[CONF_URL]
     secret = data[CONF_SHARED_SECRET]
     bot = TalkBot(url, secret)
@@ -69,7 +58,7 @@ async def handle_webhook(
         return Response(status=401)
 
     body = await request.text()
-    digest = bot.sign_data(body, secret, random)
+    digest = bot.sign_data(body, secret, random).hexdigest()
 
     if digest != signature:
         _LOGGER.error(

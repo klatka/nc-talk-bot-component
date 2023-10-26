@@ -66,12 +66,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if not self.hass.components.cloud.async_is_connected():
                     return self.async_abort(reason="cloud_not_connected")
 
-                webhook_url = await self.hass.components.cloud.async_create_cloudhook(
-                    webhook_id
+                webhook_url = (
+                    await self.hass.components.cloud.async_create_cloudhook(
+                        webhook_id
+                    )
                 )
                 cloudhook = True
             else:
-                webhook_url = self.hass.components.webhook.async_generate_url(webhook_id)
+                webhook_url = self.hass.components.webhook.async_generate_url(
+                    webhook_id
+                )
                 cloudhook = False
 
             description_placeholder["webhook_url"] = webhook_url
