@@ -1,6 +1,7 @@
 {
   "domain": "nctalkbot",
   "name": "Nextcloud Talk Bot",
+  "after_dependencies": ["cloud"],
   "codeowners": ["@klatka"],
   "config_flow": true,
   "dependencies": [],
