@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_entry_flow
 from aiohttp.web import Request, Response
 
-from .talk_bot import TalkBot
+from .talk_bot import generate_signature
 from .const import DOMAIN, CONF_SHARED_SECRET, EVENT_RECEIVED
 
 _LOGGER = logging.getLogger(__name__)
@@ -20,13 +20,6 @@ async def handle_webhook(
     hass: HomeAssistant, webhook_id: str, request: Request
 ) -> Response:
     """Handle webhook callback."""
-    assert hass is not None
-    data = hass.data[DOMAIN]
-
-    url = data[CONF_URL]
-    secret = data[CONF_SHARED_SECRET]
-    bot = TalkBot(url, secret)
-
     server = request.headers.get("X-NEXTCLOUD-TALK-BACKEND")
     if server is None:
         _LOGGER.error(
@@ -49,6 +42,10 @@ async def handle_webhook(
         )
         return Response(status=401)
 
+    config = hass.data[DOMAIN]
+    url = config[CONF_URL]
+    secret = config[CONF_SHARED_SECRET]
+
     if url != server:
         _LOGGER.error(
             "Error validating server: %s / %s",
@@ -58,7 +55,7 @@ async def handle_webhook(
         return Response(status=401)
 
     body = await request.text()
-    digest = bot.sign_data(body, secret, random).hexdigest()
+    digest = generate_signature(body, secret, random).hexdigest()
 
     if digest != signature:
         _LOGGER.error(
@@ -84,6 +81,7 @@ async def handle_webhook(
         )
         return Response(status=400)
 
+    data["webhook_id"] = webhook_id
     hass.bus.async_fire(EVENT_RECEIVED, data)
 
 

@@ -15,7 +15,7 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from .talk_bot import TalkBot
 from .const import (
     CONF_SHARED_SECRET,
-    CONF_ROOM_TOKENS,
+    CONF_ROOM_DEFAULT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_URL): cv.url,
         vol.Required(CONF_SHARED_SECRET): cv.string,
-        vol.Optional(CONF_ROOM_TOKENS): cv.ensure_list(cv.string),
+        vol.Optional(CONF_ROOM_DEFAULT): cv.string,
     }
 )
 
@@ -32,7 +32,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 async def async_get_service(
     hass: HomeAssistant,  # pylint: disable=unused-argument
     config: ConfigType,
-    discovery_info: DiscoveryInfoType
+    discovery_info: DiscoveryInfoType  # pylint: disable=unused-argument
     | None = None,  # pylint: disable=unused-argument
 ) -> BaseNotificationService | None:
     """Return the notify service."""
@@ -48,17 +48,15 @@ class TalkBotNotificationService(
     def __init__(self, config):
         """Initialize the service."""
 
-        self.bot = TalkBot(
-            config.get(CONF_URL), config.get(CONF_SHARED_SECRET)
-        )
-        self.token_list = config.get(CONF_ROOM_TOKENS)
+        self.bot = TalkBot(config[CONF_URL], config[CONF_SHARED_SECRET])
+        self.default_target_room = config.get(CONF_ROOM_DEFAULT)
 
     async def async_send_message(self, message="", **kwargs):
         """Send a message to Nextcloud Talk bot."""
 
         targets = kwargs.get("target")
-        if not targets and isinstance(self.token_list, list):
-            targets = self.token_list
+        if not targets and self.default_target_room is not None:
+            targets = {self.default_target_room}
         if not targets:
             _LOGGER.error("No targets")
         else:

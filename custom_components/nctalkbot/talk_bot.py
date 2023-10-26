@@ -2,10 +2,8 @@
 import logging
 import hashlib
 import hmac
-
-from random import choice
-from string import ascii_lowercase, ascii_uppercase, digits
-
+import os
+import secrets
 import httpx
 
 _LOGGER = logging.getLogger(__name__)
@@ -26,35 +24,27 @@ class TalkBot:
 
         if not token:
             raise ValueError("Specify 'token' value.")
-        reference_id = hashlib.sha256(
-            self._random_string(32).encode("UTF-8")
-        ).hexdigest()
-        params = {
+
+        reference_id = hashlib.sha256(os.urandom(16)).hexdigest()
+        data = {
             "message": message,
             "referenceId": reference_id,
         }
 
-        return await self._async_sign_send_request(
-            f"/{token}/message", params, message
-        )
-
-    async def _async_sign_send_request(
-        self, url_suffix: str, data: dict, data_to_sign: str
-    ) -> httpx.Response:
-        talk_bot_random = self._random_string(32)
-        hmac_sign = self.sign_data(
-            data_to_sign, self.shared_secret, talk_bot_random
+        random = secrets.token_hex(32)
+        hmac_sign = generate_signature(
+            data["message"], self.shared_secret, random
         )
         headers = {
-            "X-Nextcloud-Talk-Bot-Random": talk_bot_random,
+            "X-Nextcloud-Talk-Bot-Random": random,
             "X-Nextcloud-Talk-Bot-Signature": hmac_sign.hexdigest(),
             "OCS-APIRequest": "true",
         }
-        url = self.nc_url + "/ocs/v2.php/apps/spreed/api/v1/bot" + url_suffix
-
-        _LOGGER.debug(
-            "Sending %s with header %s to %s", hmac_sign, headers, url
+        url = (
+            self.nc_url + f"/ocs/v2.php/apps/spreed/api/v1/bot/{token}/message"
         )
+
+        _LOGGER.debug("Sending %s with header %s to %s", data, headers, url)
 
         async with httpx.AsyncClient() as client:
             r = await client.post(
@@ -65,20 +55,14 @@ class TalkBot:
 
         return r
 
-    def sign_data(
-        self, data_to_sign: str, secret: str, random: str
-    ) -> hmac.HMAC:
-        """Sign data with the given secret and return the HMAC."""
-        hmac_sign = hmac.new(
-            secret.encode("UTF-8"),
-            random.encode("UTF-8"),
-            digestmod=hashlib.sha256,
-        )
-        hmac_sign.update(data_to_sign.encode("UTF-8"))
-        return hmac_sign
 
-    def _random_string(self, size: int) -> str:
-        """Generates a random ASCII string of the given size."""
-
-        letters = ascii_lowercase + ascii_uppercase + digits
-        return "".join(choice(letters) for _ in range(size))
+@staticmethod
+def generate_signature(data: str, secret: str, random: str) -> hmac.HMAC:
+    """Sign data with the given secret and return the HMAC."""
+    hmac_sign = hmac.new(
+        secret.encode("UTF-8"),
+        random.encode("UTF-8"),
+        digestmod=hashlib.sha256,
+    )
+    hmac_sign.update(data.encode("UTF-8"))
+    return hmac_sign

@@ -9,7 +9,7 @@ from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 from custom_components.nctalkbot.const import (
     DOMAIN,
     CONF_SHARED_SECRET,
-    CONF_ROOM_TOKENS,
+    CONF_ROOM_DEFAULT,
 )
 
 
@@ -36,7 +36,7 @@ def config():
                 CONF_NAME: "nctalkbot",
                 CONF_URL: "https://test.local",
                 CONF_SHARED_SECRET: "test_secret",
-                CONF_ROOM_TOKENS: ["test_token"],
+                CONF_ROOM_DEFAULT: "test_token",
             }
         ]
     }
