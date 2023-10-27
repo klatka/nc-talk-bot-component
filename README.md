@@ -7,8 +7,8 @@ Custom component for Home Assistant to communicate between Home Assistant and Ne
 
 ## What can I do with this component?
 
-Send a message from Home Assistant to a room in Nextcloud Talk to send updates or alerts and so on.
-React to messages sent in this room and do some stuff like open the garage door if somebody is asking.
+- Send a message from Home Assistant to a room in Nextcloud Talk to send updates or alerts and so on.
+- React to messages sent in this room and do some stuff like open the garage door if somebody is asking.
 
 You can choose if you want to communicate one way or in both ways.
 
@@ -173,7 +173,7 @@ context:
   user_id: null
 ```
 
-At this point, you can create plenty of automation for this webhook event:
+At this point, you can create plenty of automation for this webhook event ([see docs](https://www.home-assistant.io/docs/automation/trigger/#event-trigger)):
 
 - If the message is `open garage` -> open garage in Home Assistant
 - Feed assistants with the message to let them handle it

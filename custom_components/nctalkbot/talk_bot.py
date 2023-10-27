@@ -4,7 +4,9 @@ import hashlib
 import hmac
 import os
 import secrets
+import requests
 import httpx
+import xml.etree.ElementTree as ET
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -54,6 +56,21 @@ class TalkBot:
             )
 
         return r
+
+
+@staticmethod
+def check_capability(nc_url: str, capability: str, timeout=5):
+    """Check if the server supports the given capability."""
+    capabilities_url = nc_url + "/ocs/v1.php/cloud/capabilities"
+    response = requests.get(capabilities_url, timeout=timeout)
+    if response.status_code == 200:
+        root = ET.fromstring(response.content)
+        capabilities = root.find(".//capabilities")
+        if capabilities is not None:
+            for feature in capabilities.findall(".//element"):
+                if feature.text == capability:
+                    return True
+    return False
 
 
 @staticmethod

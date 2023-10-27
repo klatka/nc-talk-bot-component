@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_entry_flow
 from aiohttp.web import Request, Response
 
-from .talk_bot import generate_signature
+from .talk_bot import generate_signature, check_capability
 from .const import DOMAIN, CONF_SHARED_SECRET, EVENT_RECEIVED
 
 _LOGGER = logging.getLogger(__name__)
@@ -89,6 +89,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the component."""
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN] = entry.data
+    url = entry.data[CONF_URL]
+
+    if not check_capability(url, "bots-v1"):
+        _LOGGER.error("Nextcloud instance does not support bots")
 
     webhook.async_register(
         hass,
