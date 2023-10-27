@@ -4,9 +4,9 @@ import hashlib
 import hmac
 import os
 import secrets
+import xml.etree.ElementTree as ET
 import requests
 import httpx
-import xml.etree.ElementTree as ET
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,7 +20,11 @@ class TalkBot:
         self.shared_secret = shared_secret
 
     async def async_send_message(
-        self, message: str, token: str = ""
+        self,
+        message: str,
+        token: str = "",
+        reply_to: int = 0,
+        silent: bool = False,
     ) -> httpx.Response:
         """Send a message and returns the response."""
 
@@ -32,6 +36,12 @@ class TalkBot:
             "message": message,
             "referenceId": reference_id,
         }
+
+        if reply_to > 0:
+            data["reply_to"] = reply_to
+
+        if silent:
+            data["silent"] = silent
 
         random = secrets.token_hex(32)
         hmac_sign = generate_signature(

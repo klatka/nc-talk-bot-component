@@ -62,7 +62,11 @@ class TalkBotNotificationService(
         else:
             for target in targets:
                 try:
-                    r = await self.bot.async_send_message(message, target)
+                    reply_to = kwargs.get("data", {}).get("reply_to", 0)
+                    silent = kwargs.get("data", {}).get("silent", False)
+                    r = await self.bot.async_send_message(
+                        message, target, reply_to, silent
+                    )
                     if not r.status_code == 201:
                         _LOGGER.error(
                             "Nextcloud Talk Bot rejected the message."
