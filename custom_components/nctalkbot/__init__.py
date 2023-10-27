@@ -93,6 +93,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if not check_capability(url, "bots-v1"):
         _LOGGER.error("Nextcloud instance does not support bots")
+        return False
 
     webhook.async_register(
         hass,
