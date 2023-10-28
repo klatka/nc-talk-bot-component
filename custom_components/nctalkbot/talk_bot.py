@@ -5,7 +5,6 @@ import hmac
 import os
 import secrets
 import xml.etree.ElementTree as ET
-import requests
 import httpx
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,8 +22,9 @@ class TalkBot:
         self,
         message: str,
         token: str = "",
-        reply_to: int = 0,
+        reply_to: str = "",
         silent: bool = False,
+        timeout=5,
     ) -> httpx.Response:
         """Send a message and returns the response."""
 
@@ -37,7 +37,7 @@ class TalkBot:
             "referenceId": reference_id,
         }
 
-        if reply_to > 0:
+        if reply_to:
             data["reply_to"] = reply_to
 
         if silent:
@@ -63,18 +63,29 @@ class TalkBot:
                 url=url,
                 json=data,
                 headers=headers,
+                timeout=timeout,
             )
 
         return r
 
 
 @staticmethod
-def check_capability(nc_url: str, capability: str, timeout=5):
+async def check_capability(nc_url: str, capability: str, timeout=5):
     """Check if the server supports the given capability."""
     capabilities_url = nc_url + "/ocs/v1.php/cloud/capabilities"
-    response = requests.get(capabilities_url, timeout=timeout)
-    if response.status_code == 200:
-        root = ET.fromstring(response.content)
+    headers = {
+        "OCS-APIRequest": "true",
+    }
+
+    async with httpx.AsyncClient() as client:
+        r = await client.get(
+            url=capabilities_url,
+            headers=headers,
+            timeout=timeout,
+        )
+
+    if r.status_code == 200:
+        root = ET.fromstring(r.content)
         capabilities = root.find(".//capabilities")
         if capabilities is not None:
             for feature in capabilities.findall(".//element"):

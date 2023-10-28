@@ -62,7 +62,7 @@ class TalkBotNotificationService(
         else:
             for target in targets:
                 try:
-                    reply_to = kwargs.get("data", {}).get("reply_to", 0)
+                    reply_to = kwargs.get("data", {}).get("reply_to", "")
                     silent = kwargs.get("data", {}).get("silent", False)
                     r = await self.bot.async_send_message(
                         message, target, reply_to, silent
