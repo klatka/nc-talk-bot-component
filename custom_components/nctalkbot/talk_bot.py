@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import os
 import secrets
+import xml.etree.ElementTree as ET
 import httpx
 
 _LOGGER = logging.getLogger(__name__)
@@ -18,7 +19,12 @@ class TalkBot:
         self.shared_secret = shared_secret
 
     async def async_send_message(
-        self, message: str, token: str = ""
+        self,
+        message: str,
+        token: str = "",
+        reply_to: str = "",
+        silent: bool = False,
+        timeout=5,
     ) -> httpx.Response:
         """Send a message and returns the response."""
 
@@ -30,6 +36,12 @@ class TalkBot:
             "message": message,
             "referenceId": reference_id,
         }
+
+        if reply_to:
+            data["reply_to"] = reply_to
+
+        if silent:
+            data["silent"] = silent
 
         random = secrets.token_hex(32)
         hmac_sign = generate_signature(
@@ -51,9 +63,35 @@ class TalkBot:
                 url=url,
                 json=data,
                 headers=headers,
+                timeout=timeout,
             )
 
         return r
+
+
+@staticmethod
+async def check_capability(nc_url: str, capability: str, timeout=5):
+    """Check if the server supports the given capability."""
+    capabilities_url = nc_url + "/ocs/v1.php/cloud/capabilities"
+    headers = {
+        "OCS-APIRequest": "true",
+    }
+
+    async with httpx.AsyncClient() as client:
+        r = await client.get(
+            url=capabilities_url,
+            headers=headers,
+            timeout=timeout,
+        )
+
+    if r.status_code == 200:
+        root = ET.fromstring(r.content)
+        capabilities = root.find(".//capabilities")
+        if capabilities is not None:
+            for feature in capabilities.findall(".//element"):
+                if feature.text == capability:
+                    return True
+    return False
 
 
 @staticmethod

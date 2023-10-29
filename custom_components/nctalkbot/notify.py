@@ -58,14 +58,20 @@ class TalkBotNotificationService(
         if not targets and self.default_target_room is not None:
             targets = {self.default_target_room}
         if not targets:
-            _LOGGER.error("No targets")
+            _LOGGER.error("No targets specified. Default room not set")
         else:
             for target in targets:
                 try:
-                    r = await self.bot.async_send_message(message, target)
+                    reply_to = kwargs.get("data", {}).get("reply_to", "")
+                    silent = kwargs.get("data", {}).get("silent", False)
+                    r = await self.bot.async_send_message(
+                        message, target, reply_to, silent
+                    )
                     if not r.status_code == 201:
                         _LOGGER.error(
-                            "Incorrect status code when posting message: %d",
+                            "Nextcloud Talk Bot rejected the message."
+                            + " Secret or room name may be wrong."
+                            + " Status code when posting message: %d",
                             r.status_code,
                         )
                 except Exception as e:  # pylint: disable=broad-except
