@@ -3,6 +3,7 @@ import logging
 import hashlib
 import hmac
 import os
+import json
 import secrets
 import xml.etree.ElementTree as ET
 import httpx
@@ -104,3 +105,33 @@ def generate_signature(data: str, secret: str, random: str) -> hmac.HMAC:
     )
     hmac_sign.update(data.encode("UTF-8"))
     return hmac_sign
+
+
+@staticmethod
+def render_content(content: str) -> str:
+    """Render the content of a message."""
+    try:
+        # Parse the JSON content
+        content_obj = json.loads(content)
+
+        # Check if the content object has 'message' and 'parameters' properties
+        if "message" in content_obj and "parameters" in content_obj:
+            message = content_obj["message"]
+            parameters = content_obj["parameters"]
+
+            # Replace placeholders in the message
+            if parameters:
+                for placeholder, data in parameters.items():
+                    if "name" in data:
+                        message = message.replace(
+                            f"{{{placeholder}}}", data["name"]
+                        )
+
+            return message
+
+        # Error if the content object doesn't have the expected structure
+        return "Invalid content structure"
+
+    except json.JSONDecodeError:
+        # Handle JSON parsing errors
+        return "Invalid JSON content"

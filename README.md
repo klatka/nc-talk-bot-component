@@ -164,6 +164,7 @@ data:
     type: Collection
     id: f7wt6tng
     name: nctalkbot
+  rendered_content: I love this component
   webhook_id: bdb898075abcf8214e5a296d7f3f0d516c69c986638ab92f7baa8e929670f7bb
 origin: LOCAL
 time_fired: "2023-10-26T16:29:23.417885+00:00"

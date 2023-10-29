@@ -12,7 +12,7 @@ from homeassistant.helpers import config_entry_flow
 from aiohttp.web import Request, Response
 from httpx import TimeoutException
 
-from .talk_bot import generate_signature, check_capability
+from .talk_bot import generate_signature, check_capability, render_content
 from .const import DOMAIN, CONF_SHARED_SECRET, EVENT_RECEIVED
 
 _LOGGER = logging.getLogger(__name__)
@@ -82,6 +82,11 @@ async def handle_webhook(
             data,
         )
         return Response(status=400)
+
+    if data.get("object", {}).get("content"):
+        data["rendered_content"] = render_content(data["object"]["content"])
+    else:
+        data["rendered_content"] = ""
 
     data["webhook_id"] = webhook_id
     hass.bus.async_fire(EVENT_RECEIVED, data)
