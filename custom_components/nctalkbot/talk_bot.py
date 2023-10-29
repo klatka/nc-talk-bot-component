@@ -120,11 +120,12 @@ def render_content(content: str) -> str:
             parameters = content_obj["parameters"]
 
             # Replace placeholders in the message
-            for placeholder, data in parameters.items():
-                if "name" in data:
-                    message = message.replace(
-                        f"{{{placeholder}}}", data["name"]
-                    )
+            if parameters:
+                for placeholder, data in parameters.items():
+                    if "name" in data:
+                        message = message.replace(
+                            f"{{{placeholder}}}", data["name"]
+                        )
 
             return message
 
