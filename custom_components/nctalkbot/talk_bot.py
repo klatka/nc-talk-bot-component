@@ -38,7 +38,7 @@ class TalkBot:
         }
 
         if reply_to:
-            data["reply_to"] = reply_to
+            data["replyTo"] = reply_to
 
         if silent:
             data["silent"] = silent
