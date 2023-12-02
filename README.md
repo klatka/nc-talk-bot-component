@@ -71,7 +71,7 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 ca
 - Add needed secrets in your `secrets.yaml`
 - Restart Home Assistant again
 
-### React to messages (Two-way HA <> NC or One-way NC > HA)
+### Method 2: React to messages (Two-way HA <> NC or One-way NC > HA)
 
 #### Step 2
 
