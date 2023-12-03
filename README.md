@@ -17,13 +17,13 @@ You can choose if you want to communicate one way or in both ways.
 - Nextcloud >= 27.1
 - Nextcloud Talk >= 17.1
 
-The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 capability - available since Nextcloud 27.1)
+The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1` (requires the bots-v1 capability - available since Nextcloud 27.1).
 
 ## Installation
 
 #### Step 1
 
-- Install this component in Home Assistant:
+Install this component in Home Assistant:
 - Add this repository to HACS
 - Install nctalkbot in HACS
 - Restart Home Assistant
@@ -37,7 +37,7 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 ca
 
 #### Step 3
 
-- Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
+Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
 - Use [occ](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html) to create a new bot:
    ```shell
    occ talk:bot:install -f response "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
@@ -68,8 +68,8 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 ca
        room_default: !secret nextcloud_talk_room_token
    ```
    Note: `room_default` is optional. If you don't set it here, you have to provide a target when calling the notify service.
-- Add needed secrets in your `secrets.yaml`
-- Restart Home Assistant again
+- Add needed secrets in your `secrets.yaml`.
+- Restart Home Assistant again.
 
 ### Method 2: React to messages (Two-way HA <> NC or One-way NC > HA)
 
@@ -81,7 +81,7 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 ca
 
 #### Step 3
 
-- Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
+Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
 - Use [occ](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html) to create a new bot:
    ```shell
    occ talk:bot:install "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
@@ -103,7 +103,7 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1`: (requires the bots-v1 ca
 #### Step 4 (Optional)
 
 - Add notify platform settings and secrets to your `configuration.yaml` as explained in Step 4 of Method 1 if you want to send messages too (Two-way HA <> NC).
-- Restart Home Assistant again
+- Restart Home Assistant again.
 
 ## Send message
 
