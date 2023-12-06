@@ -24,8 +24,9 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1` (requires the bots-v1 cap
 #### Step 1
 
 Install this component in Home Assistant:
-- Add this repository to HACS
-- Install nctalkbot in HACS
+- Ensure you have [Home Assistant Community Store](https://hacs.xyz/) installed
+- Add this custom repository to HACS in the category `Integration`
+- Search for nctalkbot in HACS under integrations and install it
 - Restart Home Assistant
 - Choose one of the following methods to continue
 
