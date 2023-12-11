@@ -26,7 +26,8 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1` (requires the bots-v1 cap
 Install this component in Home Assistant:
 - Ensure you have [Home Assistant Community Store](https://hacs.xyz/) installed
 - Add this custom repository to HACS in the category `Integration`
-- Search for nctalkbot in HACS under integrations and install it
+- Search for nctalkbot in HACS under integrations and install it:  
+  [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=nctalkbot)
 - Restart Home Assistant
 - Choose one of the following methods to continue
 
@@ -76,7 +77,8 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
 
 #### Step 2
 
-- Add this integration ([Settings > Devices & Integrations](https://my.home-assistant.io/redirect/integrations)).
+- Add this integration ([Settings > Devices & Integrations](https://my.home-assistant.io/redirect/integrations)):  
+  [![Open your Home Assistant instance and show your integrations.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
 - You have to provide your URL to your Nextcloud instance (e.g. `https://nextcloud.local/`) and click on submit.
 - The next window shows a `Webhook URL` and a `Shared secret`. You will need this info for installing the Nextcloud Talk Bot.
 
