@@ -1,6 +1,5 @@
 # Nextcloud Talk Bot
-
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/docs/user/)
 ![Version](https://img.shields.io/github/v/release/klatka/nc-talk-bot-component?style=for-the-badge)
 
 Custom component for Home Assistant to communicate between Home Assistant and Nextcloud Talk.
@@ -25,9 +24,8 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1` (requires the bots-v1 cap
 
 Install this component in Home Assistant:
 - Ensure you have [Home Assistant Community Store](https://hacs.xyz/) installed
-- Add this custom repository to HACS in the category `Integration`
-- Search for nctalkbot in HACS under integrations and install it:  
-  [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=nctalkbot)
+- Search for **nctalkbot** in HACS under integrations and install it:  
+  [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=klatka&repository=nc-talk-bot-component&category=integration)
 - Restart Home Assistant
 - Choose one of the following methods to continue
 
@@ -35,7 +33,7 @@ Install this component in Home Assistant:
 
 #### Step 2
 
-- Generate a 128-char hex string to use as secret (minimum is 40 chars).
+- Generate a 128-char hex string as a secret (minimum is 40 chars).
 
 #### Step 3
 
@@ -69,8 +67,14 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
        shared_secret: !secret nextcloud_talk_shared_secret
        room_default: !secret nextcloud_talk_room_token
    ```
-   Note: `room_default` is optional. If you don't set it here, you have to provide a target when calling the notify service.
-- Add needed secrets in your `secrets.yaml`.
+   Note: `room_default` is optional. If you don't set it here, you must provide a target when calling the notify service.
+- Add needed secrets in your `secrets.yaml`. It should look like this:
+   ```yaml
+  # Nextcloud Push
+  nextcloud_url: https://cloud.my-domain.local
+  nextcloud_talk_shared_secret: your-own-128-char-hex-string
+  nextcloud_talk_room_token: room-token
+   ```
 - Restart Home Assistant again.
 
 ### Method 2: React to messages (Two-way HA <> NC or One-way NC > HA)
@@ -78,7 +82,7 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
 #### Step 2
 
 - Add this integration ([Settings > Devices & Integrations](https://my.home-assistant.io/redirect/integrations)):  
-  [![Open your Home Assistant instance and show your integrations.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
+  [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=nctalkbot)
 - You have to provide your URL to your Nextcloud instance (e.g. `https://nextcloud.local/`) and click on submit.
 - The next window shows a `Webhook URL` and a `Shared secret`. You will need this info for installing the Nextcloud Talk Bot.
 
