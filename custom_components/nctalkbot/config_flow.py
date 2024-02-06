@@ -53,30 +53,32 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             description_placeholder = {}
-
+            cloudhook = False
             shared_secret = secrets.token_hex(64)
             description_placeholder[CONF_SHARED_SECRET] = shared_secret
 
             webhook_id = self.hass.components.webhook.async_generate_id()
 
-            if (
-                "cloud" in self.hass.config.components
-                and self.hass.components.cloud.async_active_subscription()
-            ):
-                if not self.hass.components.cloud.async_is_connected():
-                    return self.async_abort(reason="cloud_not_connected")
+            if "cloud" in self.hass.config.components:
+                try:
+                    if self.hass.components.cloud.async_active_subscription():
+                        if not self.hass.components.cloud.async_is_connected():
+                            return self.async_abort(
+                                reason="cloud_not_connected"
+                            )
 
-                webhook_url = (
-                    await self.hass.components.cloud.async_create_cloudhook(
-                        webhook_id
-                    )
-                )
-                cloudhook = True
-            else:
+                        webhook_url = await self.hass.components.cloud.async_create_cloudhook(
+                            webhook_id
+                        )
+                        cloudhook = True
+                except AttributeError:
+                    # probably replaced cloud component by custom integration
+                    pass
+
+            if not cloudhook:
                 webhook_url = self.hass.components.webhook.async_generate_url(
                     webhook_id
                 )
-                cloudhook = False
 
             description_placeholder["webhook_url"] = webhook_url
 
