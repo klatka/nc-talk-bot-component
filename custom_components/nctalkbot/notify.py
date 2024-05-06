@@ -1,4 +1,5 @@
 """Notification service."""
+
 import logging
 import voluptuous as vol
 
@@ -32,17 +33,16 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 async def async_get_service(
     hass: HomeAssistant,  # pylint: disable=unused-argument
     config: ConfigType,
-    discovery_info: DiscoveryInfoType  # pylint: disable=unused-argument
-    | None = None,  # pylint: disable=unused-argument
+    discovery_info: (  # pylint: disable=unused-argument
+        DiscoveryInfoType | None  # pylint: disable=unused-argument
+    ) = None,  # pylint: disable=unused-argument
 ) -> BaseNotificationService | None:
     """Return the notify service."""
 
     return TalkBotNotificationService(config)
 
 
-class TalkBotNotificationService(
-    BaseNotificationService
-):  # pylint: disable=abstract-method
+class TalkBotNotificationService(BaseNotificationService):  # pylint: disable=abstract-method
     """Implementation of a notification service."""
 
     def __init__(self, config):
@@ -68,9 +68,7 @@ class TalkBotNotificationService(
                         reply_to = kwargs["data"].get("reply_to", "")
                         silent = kwargs["data"].get("silent", False)
 
-                    r = await self.bot.async_send_message(
-                        message, target, reply_to, silent
-                    )
+                    r = await self.bot.async_send_message(message, target, reply_to, silent)
                     if not r.status_code == 201:
                         _LOGGER.error(
                             "Nextcloud Talk Bot rejected the message."

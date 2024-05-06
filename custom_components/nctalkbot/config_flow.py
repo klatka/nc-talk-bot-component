@@ -1,4 +1,5 @@
 """Config flow for the integration."""
+
 from __future__ import annotations
 
 import logging
@@ -24,9 +25,7 @@ _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_URL): TextSelector(
-            TextSelectorConfig(type=TextSelectorType.URL)
-        ),
+        vol.Required(CONF_URL): TextSelector(TextSelectorConfig(type=TextSelectorType.URL)),
     }
 )
 
@@ -42,9 +41,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle a user initiated set up flow to create a webhook."""
         if self._async_current_entries():
             return self.async_abort(reason="already_configured")
@@ -63,9 +60,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 try:
                     if self.hass.components.cloud.async_active_subscription():
                         if not self.hass.components.cloud.async_is_connected():
-                            return self.async_abort(
-                                reason="cloud_not_connected"
-                            )
+                            return self.async_abort(reason="cloud_not_connected")
 
                         webhook_url = await self.hass.components.cloud.async_create_cloudhook(
                             webhook_id
@@ -76,9 +71,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     pass
 
             if not cloudhook:
-                webhook_url = self.hass.components.webhook.async_generate_url(
-                    webhook_id
-                )
+                webhook_url = self.hass.components.webhook.async_generate_url(webhook_id)
 
             description_placeholder["webhook_url"] = webhook_url
 

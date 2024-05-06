@@ -1,4 +1,5 @@
 """Tests for the nctalkbot integration."""
+
 import os
 import sys
 import pytest
