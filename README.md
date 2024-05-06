@@ -1,4 +1,5 @@
 # Nextcloud Talk Bot
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/docs/user/)
 ![Version](https://img.shields.io/github/v/release/klatka/nc-talk-bot-component?style=for-the-badge)
 
@@ -20,96 +21,120 @@ The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1` (requires the bots-v1 cap
 
 ## Installation
 
-#### Step 1
+### Preparation
 
 Install this component in Home Assistant:
+
 - Ensure you have [Home Assistant Community Store](https://hacs.xyz/) installed
-- Search for **nctalkbot** in HACS under integrations and install it:  
+- Search for **nctalkbot** in HACS under integrations and install it:
   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=klatka&repository=nc-talk-bot-component&category=integration)
 - Restart Home Assistant
 - Choose one of the following methods to continue
 
 ### Method 1: Send messages only (One-way HA > NC)
 
-#### Step 2
+#### Method 1: Step 1
 
 - Generate a 128-char hex string as a secret (minimum is 40 chars).
 
-#### Step 3
+#### Method 1: Step 2
 
 Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
-- Use [occ](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html) to create a new bot:
-   ```shell
-   occ talk:bot:install -f response "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
-   ```
-   Note: `webhook_url` must be a valid URL. Even if you explicitly leave out the webhook feature like above. If you enable the webhook feature, all your messages will be sent to this URL.
-- Get the id of the created bot:
-   ```shell
-   occ talk:bot:list
-   ```
-- Create a room in Nextcloud Talk (you get the room token within the response):
-   ```shell
-   occ talk:room:create --user <your_uid> --owner <your_uid> <room_name>
-   ```
-- Assign bot to this room:
-   ```shell
-   occ talk:bot:setup <bot_id> <room_token>
-   ```
 
-#### Step 4
+- Use [occ](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html) to create a new bot:
+
+  ```bash
+  occ talk:bot:install -f response "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
+  ```
+
+  Note: `webhook_url` must be a valid URL. Even if you explicitly leave out the webhook feature like above. If you enable the webhook feature, all your messages will be sent to this URL.
+
+- Get the id of the created bot:
+
+  ```bash
+  occ talk:bot:list
+  ```
+
+- Create a room in Nextcloud Talk (you get the room token within the response):
+
+  ```bash
+  occ talk:room:create --user <your_uid> --owner <your_uid> <room_name>
+  ```
+
+- Assign bot to this room:
+
+  ```bash
+  occ talk:bot:setup <bot_id> <room_token>
+  ```
+
+#### Method 1: Step 3
 
 - Add this to your `configuration.yaml`:
-   ```yaml
-   notify:
-     - platform: nctalkbot
-       name: nctalkbot
-       url: !secret nextcloud_url
-       shared_secret: !secret nextcloud_talk_shared_secret
-       room_default: !secret nextcloud_talk_room_token
-   ```
-   Note: `room_default` is optional. If you don't set it here, you must provide a target when calling the notify service.
+
+  ```yaml
+  notify:
+    - platform: nctalkbot
+      name: nctalkbot
+      url: !secret nextcloud_url
+      shared_secret: !secret nextcloud_talk_shared_secret
+      room_default: !secret nextcloud_talk_room_token
+  ```
+
+  Note: `room_default` is optional. If you don't set it here, you must provide a target when calling the notify service.
+
 - Add needed secrets in your `secrets.yaml`. It should look like this:
-   ```yaml
+
+  ```yaml
   # Nextcloud Push
   nextcloud_url: https://cloud.my-domain.local
   nextcloud_talk_shared_secret: your-own-128-char-hex-string
   nextcloud_talk_room_token: room-token
-   ```
+  ```
+
 - Restart Home Assistant again.
 
 ### Method 2: React to messages (Two-way HA <> NC or One-way NC > HA)
 
-#### Step 2
+#### Method 2: Step 1
 
-- Add this integration ([Settings > Devices & Integrations](https://my.home-assistant.io/redirect/integrations)):  
+- Add this integration ([Settings > Devices & Integrations](https://my.home-assistant.io/redirect/integrations)):
   [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=nctalkbot)
 - You have to provide your URL to your Nextcloud instance (e.g. `https://nextcloud.local/`) and click on submit.
 - The next window shows a `Webhook URL` and a `Shared secret`. You will need this info for installing the Nextcloud Talk Bot.
 
-#### Step 3
+#### Method 2: Step 2
 
 Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.readthedocs.io/en/latest/bots/)):
+
 - Use [occ](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html) to create a new bot:
-   ```shell
-   occ talk:bot:install "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
-   ```
-   Note: Fill in the `Webhook URL` and the `Shared secret` generated by the config entry.
+
+  ```bash
+  occ talk:bot:install "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
+  ```
+
+  Note: Fill in the `Webhook URL` and the `Shared secret` generated by the config entry.
+
 - Get the id of the created bot:
-   ```shell
-   occ talk:bot:list
-   ```
+
+  ```bash
+  occ talk:bot:list
+  ```
+
 - Create a room in Nextcloud Talk (you get the room token within the response):
-   ```shell
-   occ talk:room:create --user <your_uid> --owner <your_uid> <room_name>
-   ```
+
+  ```bash
+  occ talk:room:create --user <your_uid> --owner <your_uid> <room_name>
+  ```
+
 - Assign bot to this room:
-   ```shell
-   occ talk:bot:setup <bot_id> <room_token>
-   ```
 
-#### Step 4 (Optional)
+  ```bash
+  occ talk:bot:setup <bot_id> <room_token>
+  ```
 
-- Add notify platform settings and secrets to your `configuration.yaml` as explained in Step 4 of Method 1 if you want to send messages too (Two-way HA <> NC).
+#### Method 2: Step 3 (Optional)
+
+- Add notify platform settings and secrets to your `configuration.yaml` as explained in Step 3 of Method 1 if you want to send messages too (Two-way HA <> NC).
 - Restart Home Assistant again.
 
 ## Send message
@@ -140,7 +165,7 @@ After verifying that this is a valid message from an authorized bot the event `n
 
 The content of the fired event looks like this:
 
-```
+```plain
 event_type: nctalkbot_webhook_received
 data:
   type: Create

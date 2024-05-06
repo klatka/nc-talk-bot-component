@@ -1,14 +1,14 @@
-name: Python app
+name: Pre-commit
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  pre-commit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.x
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           # Semantic version range syntax or exact version of a Python version
           python-version: "3.x"
@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.test.txt
-      - name: Run pytest
+          pip install -r requirements.dev.txt
+      - name: Run pre-commit
         run: |
-          pytest
+          pre-commit run --all

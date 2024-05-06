@@ -1,4 +1,5 @@
 """The Nextcloud Talk Bot integration."""
+
 from __future__ import annotations
 import asyncio
 import json
@@ -18,9 +19,7 @@ from .const import DOMAIN, CONF_SHARED_SECRET, EVENT_RECEIVED
 _LOGGER = logging.getLogger(__name__)
 
 
-async def handle_webhook(
-    hass: HomeAssistant, webhook_id: str, request: Request
-) -> Response:
+async def handle_webhook(hass: HomeAssistant, webhook_id: str, request: Request) -> Response:
     """Handle webhook callback."""
     server = request.headers.get("X-NEXTCLOUD-TALK-BACKEND")
     if server is None:

@@ -1,4 +1,5 @@
 """Test nctalkbot integration."""
+
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.config import async_process_ha_core_config
 from homeassistant.core import HomeAssistant

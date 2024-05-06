@@ -1,4 +1,5 @@
 """Nextcloud Talk Bot class."""
+
 import logging
 import hashlib
 import hmac
@@ -45,17 +46,13 @@ class TalkBot:
             data["silent"] = silent
 
         random = secrets.token_hex(32)
-        hmac_sign = generate_signature(
-            data["message"], self.shared_secret, random
-        )
+        hmac_sign = generate_signature(data["message"], self.shared_secret, random)
         headers = {
             "X-Nextcloud-Talk-Bot-Random": random,
             "X-Nextcloud-Talk-Bot-Signature": hmac_sign.hexdigest(),
             "OCS-APIRequest": "true",
         }
-        url = (
-            self.nc_url + f"/ocs/v2.php/apps/spreed/api/v1/bot/{token}/message"
-        )
+        url = self.nc_url + f"/ocs/v2.php/apps/spreed/api/v1/bot/{token}/message"
 
         _LOGGER.debug("Sending %s with header %s to %s", data, headers, url)
 
@@ -123,9 +120,7 @@ def render_content(content: str) -> str:
             if parameters:
                 for placeholder, data in parameters.items():
                     if "name" in data:
-                        message = message.replace(
-                            f"{{{placeholder}}}", data["name"]
-                        )
+                        message = message.replace(f"{{{placeholder}}}", data["name"])
 
             return message
 
