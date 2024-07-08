@@ -19,4 +19,4 @@ jobs:
           pip install -r requirements.dev.txt
       - name: Run pre-commit
         run: |
-          pre-commit run --all
+          pre-commit run --all-files --color always --show-diff-on-failure
