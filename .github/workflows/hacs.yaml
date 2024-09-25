@@ -1,6 +1,6 @@
 name: HACS Action
 
-on:
+"on":
   push:
   pull_request:
   schedule:
