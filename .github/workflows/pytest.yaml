@@ -1,6 +1,6 @@
-name: Python app
+name: Pytest
 
-on: [push, pull_request]
+"on": [push, pull_request]
 
 jobs:
   build:

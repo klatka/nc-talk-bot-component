@@ -1,6 +1,6 @@
 name: Pre-commit auto-update
 
-on:
+"on":
   schedule:
     - cron: "0 0 * * *"
 

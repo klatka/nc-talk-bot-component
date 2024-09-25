@@ -1,5 +1,2 @@
 pre-commit
-flake8
-black
 ruff
-pylint
