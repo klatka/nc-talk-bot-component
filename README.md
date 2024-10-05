@@ -2,6 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/docs/user/)
 ![Version](https://img.shields.io/github/v/release/klatka/nc-talk-bot-component?style=for-the-badge)
+[![codecov](https://codecov.io/github/klatka/nc-talk-bot-component/graph/badge.svg?token=FQHO5HV9UN)](https://codecov.io/github/klatka/nc-talk-bot-component)
 
 Custom component for Home Assistant to communicate between Home Assistant and Nextcloud Talk.
 
@@ -27,6 +28,7 @@ Install this component in Home Assistant:
 
 - Ensure you have [Home Assistant Community Store](https://hacs.xyz/) installed
 - Search for **nctalkbot** in HACS under integrations and install it:
+
   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=klatka&repository=nc-talk-bot-component&category=integration)
 - Restart Home Assistant
 - Choose one of the following methods to continue
@@ -98,6 +100,7 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
 #### Method 2: Step 1
 
 - Add this integration ([Settings > Devices & Integrations](https://my.home-assistant.io/redirect/integrations)):
+
   [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=nctalkbot)
 - You have to provide your URL to your Nextcloud instance (e.g. `https://nextcloud.local/`) and click on submit.
 - The next window shows a `Webhook URL` and a `Shared secret`. You will need this info for installing the Nextcloud Talk Bot.
