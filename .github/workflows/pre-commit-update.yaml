@@ -24,4 +24,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
+          title: '[Action] Pre-commit auto-update'
+          commit-message: '[Action] Pre-commit auto-update'
           labels: dependencies,actions
