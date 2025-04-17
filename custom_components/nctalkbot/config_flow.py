@@ -16,7 +16,6 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 from homeassistant.components import webhook
-from homeassistant.helpers.network import get_url
 
 from .const import (
     DOMAIN,
@@ -55,58 +54,35 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            description_placeholder = {}
-            cloudhook = False
-            shared_secret = secrets.token_hex(64)
-            description_placeholder[CONF_SHARED_SECRET] = shared_secret
-
-            webhook_id = webhook.async_generate_id()
-
-            if "cloud" in self.hass.config.components:
-                try:
-                    if self.hass.components.cloud.async_active_subscription():
-                        if not self.hass.components.cloud.async_is_connected():
-                            return self.async_abort(reason="cloud_not_connected")
-
-                        webhook_url = (
-                            await self.hass.components.cloud.async_create_cloudhook(
-                                webhook_id
-                            )
-                        )
-                        cloudhook = True
-                except AttributeError:
-                    # probably replaced cloud component by custom integration
-                    pass
-
-            if not cloudhook:
-                try:
-                    webhook_url = webhook.async_generate_url(webhook_id)
-                except Exception:  # pylint: disable=broad-except
-                    # In test environment, we might not have a URL available
-                    webhook_url = f"http://test.local/api/webhook/{webhook_id}"
-
-            description_placeholder["webhook_url"] = webhook_url
-
             try:
                 await validate_config(user_input)
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("User input invalid %s", user_input)
                 errors["base"] = "User input invalid"
-
-            if not errors:
-                return self.async_create_entry(
-                    title=DOMAIN,
-                    data={
-                        CONF_WEBHOOK_ID: webhook_id,
-                        "cloudhook": cloudhook,
-                        CONF_SHARED_SECRET: shared_secret,
-                        CONF_URL: user_input[CONF_URL],
-                    },
-                    description_placeholders=description_placeholder,
-                )
+            else:
+                return await self.async_step_webhook(user_input)
 
         return self.async_show_form(
-            step_id=config_entries.SOURCE_USER,
+            step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
+        )
+
+    async def async_step_webhook(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Handle the webhook setup step."""
+        if user_input is None:
+            return self.async_show_form(step_id="webhook")
+
+        webhook_id = webhook.async_generate_id()
+        shared_secret = secrets.token_hex(64)
+
+        return self.async_create_entry(
+            title=DOMAIN,
+            data={
+                CONF_WEBHOOK_ID: webhook_id,
+                CONF_SHARED_SECRET: shared_secret,
+                CONF_URL: self.user_input[CONF_URL],
+            },
         )

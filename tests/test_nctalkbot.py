@@ -1,5 +1,7 @@
 """Test nctalkbot integration."""
 
+from unittest.mock import patch
+
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
@@ -25,29 +27,30 @@ async def test_setup(hass: HomeAssistant, config):
 
 async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     """Test that config flow works."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
-    )
+    with patch("custom_components.nctalkbot.talk_bot.check_capability", return_value=True):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": config_entries.SOURCE_USER}
+        )
 
-    assert result["type"] == data_entry_flow.FlowResultType.FORM
-    assert result["step_id"] == "user"
-    assert result["handler"] == DOMAIN
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
+        assert result["step_id"] == "user"
+        assert result["handler"] == DOMAIN
 
-    # First step: URL configuration
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_URL: config_data[CONF_URL]}
-    )
+        # First step: URL configuration
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], user_input={CONF_URL: config_data[CONF_URL]}
+        )
 
-    # Second step: Webhook setup
-    assert result["type"] == data_entry_flow.FlowResultType.FORM
-    assert result["step_id"] == "webhook"
+        # Second step: Webhook setup
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
+        assert result["step_id"] == "webhook"
+        
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], user_input={}
+        )
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={}
-    )
-
-    assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
-    assert result["title"] == DOMAIN
-    assert result["data"][CONF_URL] == config_data[CONF_URL]
-    assert result["data"][CONF_SHARED_SECRET] is not None
-    assert result["data"][CONF_WEBHOOK_ID] is not None
+        assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
+        assert result["title"] == DOMAIN
+        assert result["data"][CONF_URL] == config_data[CONF_URL]
+        assert result["data"][CONF_SHARED_SECRET] is not None
+        assert result["data"][CONF_WEBHOOK_ID] is not None
