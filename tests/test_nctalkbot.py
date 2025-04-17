@@ -29,7 +29,7 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "user"
     assert result["handler"] == DOMAIN
 
@@ -39,14 +39,14 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     )
 
     # Second step: Webhook setup
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "webhook"
     
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={}
     )
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
     assert result["title"] == DOMAIN
     assert result["data"][CONF_URL] == config_data[CONF_URL]
     assert result["data"][CONF_SHARED_SECRET] is not None
