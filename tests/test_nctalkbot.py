@@ -3,12 +3,12 @@
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
+from homeassistant.const import CONF_URL
 
 from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 
 from custom_components.nctalkbot.const import (
     DOMAIN,
-    CONF_URL,
     CONF_SHARED_SECRET,
     CONF_WEBHOOK_ID,
 )
@@ -33,8 +33,17 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     assert result["step_id"] == "user"
     assert result["handler"] == DOMAIN
 
+    # First step: URL configuration
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={CONF_URL: config_data[CONF_URL]}
+    )
+
+    # Second step: Webhook setup
+    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["step_id"] == "webhook"
+    
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], user_input={}
     )
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
