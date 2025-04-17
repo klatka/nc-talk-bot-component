@@ -44,6 +44,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    def __init__(self) -> None:
+        """Initialize the config flow."""
+        super().__init__()
+        self._url: str | None = None
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -60,6 +65,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("User input invalid %s", user_input)
                 errors["base"] = "User input invalid"
             else:
+                self._url = user_input[CONF_URL]
                 return await self.async_step_webhook(user_input)
 
         return self.async_show_form(
@@ -83,6 +89,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data={
                 CONF_WEBHOOK_ID: webhook_id,
                 CONF_SHARED_SECRET: shared_secret,
-                CONF_URL: self.user_input[CONF_URL],
+                CONF_URL: self._url,
             },
         )
