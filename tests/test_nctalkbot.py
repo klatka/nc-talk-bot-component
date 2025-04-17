@@ -1,7 +1,6 @@
 """Test nctalkbot integration."""
 
 from homeassistant import config_entries, data_entry_flow
-from homeassistant.config import async_process_ha_core_config
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 
@@ -21,11 +20,6 @@ async def test_setup(hass: HomeAssistant, config):
 
 async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     """Test that config flow works."""
-    await async_process_ha_core_config(
-        hass,
-        {"internal_url": "http://hass.local:8123"},
-    )
-
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
