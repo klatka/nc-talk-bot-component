@@ -41,7 +41,7 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     # Second step: Webhook setup
     assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "webhook"
-    
+
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={}
     )

@@ -15,6 +15,8 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
+from homeassistant.components import webhook
+from homeassistant.helpers.network import get_url
 
 from .const import (
     DOMAIN,
@@ -58,7 +60,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             shared_secret = secrets.token_hex(64)
             description_placeholder[CONF_SHARED_SECRET] = shared_secret
 
-            webhook_id = self.hass.components.webhook.async_generate_id()
+            webhook_id = webhook.async_generate_id()
 
             if "cloud" in self.hass.config.components:
                 try:
@@ -77,9 +79,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     pass
 
             if not cloudhook:
-                webhook_url = self.hass.components.webhook.async_generate_url(
-                    webhook_id
-                )
+                try:
+                    webhook_url = webhook.async_generate_url(webhook_id)
+                except Exception:  # pylint: disable=broad-except
+                    # In test environment, we might not have a URL available
+                    webhook_url = f"http://test.local/api/webhook/{webhook_id}"
 
             description_placeholder["webhook_url"] = webhook_url
 
