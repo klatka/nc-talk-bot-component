@@ -6,7 +6,12 @@ from homeassistant.setup import async_setup_component
 
 from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 
-from custom_components.nctalkbot.const import DOMAIN, CONF_URL, CONF_SHARED_SECRET, CONF_WEBHOOK_ID
+from custom_components.nctalkbot.const import (
+    DOMAIN,
+    CONF_URL,
+    CONF_SHARED_SECRET,
+    CONF_WEBHOOK_ID,
+)
 
 
 async def test_setup(hass: HomeAssistant, config):

@@ -1,5 +1,7 @@
 """Constants for the integration."""
 
+from homeassistant.const import CONF_URL
+
 DOMAIN = "nctalkbot"
 
 CONF_SHARED_SECRET = "shared_secret"

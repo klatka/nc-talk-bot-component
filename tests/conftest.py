@@ -50,5 +50,5 @@ def config_data():
     return {
         CONF_URL: "https://test.local",
         CONF_SHARED_SECRET: "test_secret",
-        CONF_WEBHOOK_ID: "test_webhook_id"
+        CONF_WEBHOOK_ID: "test_webhook_id",
     }
