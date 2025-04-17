@@ -27,7 +27,9 @@ async def test_setup(hass: HomeAssistant, config):
 
 async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     """Test that config flow works."""
-    with patch("custom_components.nctalkbot.talk_bot.check_capability", return_value=True):
+    with patch(
+        "custom_components.nctalkbot.talk_bot.check_capability", return_value=True
+    ):
         result = await hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_USER}
         )
@@ -44,7 +46,7 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
         # Second step: Webhook setup
         assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "webhook"
-        
+
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"], user_input={}
         )
