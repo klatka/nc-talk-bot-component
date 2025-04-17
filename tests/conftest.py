@@ -11,6 +11,7 @@ from custom_components.nctalkbot.const import (
     DOMAIN,
     CONF_SHARED_SECRET,
     CONF_ROOM_DEFAULT,
+    CONF_WEBHOOK_ID,
 )
 
 
@@ -48,4 +49,6 @@ def config_data():
     """Fixture for a nctalkbot config flow."""
     return {
         CONF_URL: "https://test.local",
+        CONF_SHARED_SECRET: "test_secret",
+        CONF_WEBHOOK_ID: "test_webhook_id"
     }

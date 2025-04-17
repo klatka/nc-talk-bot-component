@@ -7,7 +7,7 @@ from homeassistant.setup import async_setup_component
 
 from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 
-from custom_components.nctalkbot.const import DOMAIN
+from custom_components.nctalkbot.const import DOMAIN, CONF_URL, CONF_SHARED_SECRET, CONF_WEBHOOK_ID
 
 
 async def test_setup(hass: HomeAssistant, config):
@@ -31,12 +31,15 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     )
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
-    assert result["step_id"] == config_entries.SOURCE_USER
+    assert result["step_id"] == "user"
     assert result["handler"] == DOMAIN
 
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input=config_data
+        result["flow_id"], user_input={CONF_URL: config_data[CONF_URL]}
     )
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == DOMAIN
+    assert result["data"][CONF_URL] == config_data[CONF_URL]
+    assert result["data"][CONF_SHARED_SECRET] is not None
+    assert result["data"][CONF_WEBHOOK_ID] is not None
