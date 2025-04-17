@@ -66,7 +66,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "User input invalid"
             else:
                 self._url = user_input[CONF_URL]
-                return await self.async_step_webhook(user_input)
+                return await self.async_step_webhook()
 
         return self.async_show_form(
             step_id="user",
