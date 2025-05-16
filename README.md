@@ -8,7 +8,7 @@ Custom component for Home Assistant to communicate between Home Assistant and Ne
 
 ## What can I do with this component?
 
-- Send a message from Home Assistant to a room in Nextcloud Talk to send updates or alerts and so on.
+- Send a message from Home Assistant to a room in Nextcloud Talk to send updates or alerts.
 - React to messages sent in this room and do some stuff like open the garage door if somebody is asking.
 
 You can choose if you want to communicate one way or in both ways.
@@ -33,7 +33,7 @@ Install this component in Home Assistant:
 - Restart Home Assistant
 - Choose one of the following methods to continue
 
-### Method 1: Send messages only (One-way HA > NC)
+### Method 1: Send messages only (One-way HA -> NC)
 
 #### Method 1: Step 1
 
@@ -49,7 +49,7 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
   occ talk:bot:install -f response "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
   ```
 
-  Note: `webhook_url` must be a valid URL. Even if you explicitly leave out the webhook feature like above. If you enable the webhook feature, all your messages will be sent to this URL.
+  Note: Although we don't need the feature to forward messages from the Nextcloud Talk chat to another system that can process the messages (webhook) to send messages from Home Assistant to Nextcloud Talk only, `webhook_url` must be provided in a valid format (e.g. http://127.0.0.1 or http://wedontcare.local).
 
 - Get the id of the created bot:
 
@@ -95,7 +95,7 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
 
 - Restart Home Assistant again.
 
-### Method 2: React to messages (Two-way HA <> NC or One-way NC > HA)
+### Method 2: React to messages (Two-way HA <-> NC or One-way NC -> HA)
 
 #### Method 2: Step 1
 
@@ -163,7 +163,7 @@ Note: The bot must be assigned to your target room!
 
 ## React to message
 
-Every time something happens in the Nextcloud Talk room, the webhook will be triggered.
+The webhook will be triggered whenever something happens in the Nextcloud Talk room (e.g. new message, reaction...).
 After verifying that this is a valid message from an authorized bot the event `nctalkbot_webhook_received` will be fired.
 
 The content of the fired event looks like this:
