@@ -8,6 +8,7 @@ import secrets
 
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.components import webhook
 from homeassistant.const import CONF_URL, CONF_WEBHOOK_ID
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import (
@@ -58,7 +59,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             shared_secret = secrets.token_hex(64)
             description_placeholder[CONF_SHARED_SECRET] = shared_secret
 
-            webhook_id = self.hass.components.webhook.async_generate_id()
+            webhook_id = webhook.async_generate_id()
 
             if "cloud" in self.hass.config.components:
                 try:
@@ -77,7 +78,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     pass
 
             if not cloudhook:
-                webhook_url = self.hass.components.webhook.async_generate_url(
+                webhook_url = webhook.async_generate_url(
                     webhook_id
                 )
 
