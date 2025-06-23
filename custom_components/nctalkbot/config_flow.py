@@ -79,10 +79,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         if not async_is_connected(hass=self.hass):
                             return self.async_abort(reason="cloud_not_connected")
 
-                        webhook_url = (
-                            await async_create_cloudhook(
-                                webhook_id
-                            )
+                        webhook_url = await async_create_cloudhook(
+                            hass=self.hass, webhook_id=webhook_id
                         )
                         cloudhook = True
                 except AttributeError:

@@ -22,8 +22,8 @@ async def test_setup(hass: HomeAssistant, config: ConfigType):
 async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     """Test that config flow works."""
     service_data = {
-            "internal_url": "http://hass.local:8123",
-        }
+        "internal_url": "http://hass.local:8123",
+    }
 
     await hass.config.async_update(**service_data)
 

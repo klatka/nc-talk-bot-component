@@ -1,17 +1,31 @@
 name: Release
 
 "on":
-  push:
-    tags:
-      - "*"
+  release:
+    types:
+      - published
 
 jobs:
-  build:
+  release:
+    name: Release artifacts
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: ncipollo/release-action@v1
+      - name: Adjust version number
+        shell: bash
+        run: |
+          yq -i -o json '.version="${{ github.event.release.tag_name }}"' \
+            "${{ github.workspace }}/custom_components/nctalkbot/manifest.json"
+
+      - name: Zip the integration directory
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/custom_components/nctalkbot"
+          zip nctalkbot.zip -r ./
+
+      - name: Upload the zip file to the release
+        uses: softprops/action-gh-release@v2
         with:
-          artifacts: "custom_components/nctalkbot"
+          files: ${{ github.workspace }}/custom_components/nctalkbot/nctalkbot.zip
