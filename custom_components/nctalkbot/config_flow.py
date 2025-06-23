@@ -75,8 +75,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if "cloud" in self.hass.config.components:
                 try:
-                    if async_active_subscription():
-                        if not async_is_connected():
+                    if async_active_subscription(hass=self.hass):
+                        if not async_is_connected(hass=self.hass):
                             return self.async_abort(reason="cloud_not_connected")
 
                         webhook_url = (
@@ -90,9 +90,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     pass
 
             if not cloudhook:
-                webhook_url = async_generate_url(
-                    webhook_id
-                )
+                webhook_url = async_generate_url(hass=self.hass, webhook_id=webhook_id)
 
             description_placeholder["webhook_url"] = webhook_url
 
