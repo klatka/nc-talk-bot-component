@@ -58,18 +58,29 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             shared_secret = secrets.token_hex(64)
             description_placeholder[CONF_SHARED_SECRET] = shared_secret
 
-            webhook_id = self.hass.components.webhook.async_generate_id()
+            # Local import to be sure cloud is loaded and setup
+            from homeassistant.components.cloud import (  # noqa: PLC0415
+                async_active_subscription,
+                async_create_cloudhook,
+                async_is_connected,
+            )
+
+            # Local import to be sure webhook is loaded and setup
+            from homeassistant.components.webhook import (  # noqa: PLC0415
+                async_generate_id,
+                async_generate_url,
+            )
+
+            webhook_id = async_generate_id()
 
             if "cloud" in self.hass.config.components:
                 try:
-                    if self.hass.components.cloud.async_active_subscription():
-                        if not self.hass.components.cloud.async_is_connected():
+                    if async_active_subscription(hass=self.hass):
+                        if not async_is_connected(hass=self.hass):
                             return self.async_abort(reason="cloud_not_connected")
 
-                        webhook_url = (
-                            await self.hass.components.cloud.async_create_cloudhook(
-                                webhook_id
-                            )
+                        webhook_url = await async_create_cloudhook(
+                            hass=self.hass, webhook_id=webhook_id
                         )
                         cloudhook = True
                 except AttributeError:
@@ -77,9 +88,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     pass
 
             if not cloudhook:
-                webhook_url = self.hass.components.webhook.async_generate_url(
-                    webhook_id
-                )
+                webhook_url = async_generate_url(hass=self.hass, webhook_id=webhook_id)
 
             description_placeholder["webhook_url"] = webhook_url
 

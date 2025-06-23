@@ -51,7 +51,7 @@ async def handle_webhook(
 
     if url != server:
         _LOGGER.error(
-            "Error validating server: %s / %s",
+            "Error validating server: %s / %s. Maybe your Nextcloud instance is not configured properly.",
             url,
             server,
         )
