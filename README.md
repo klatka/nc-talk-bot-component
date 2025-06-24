@@ -1,7 +1,7 @@
 # Nextcloud Talk Bot
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/docs/user/)
-![Version](https://img.shields.io/github/v/release/klatka/nc-talk-bot-component?style=for-the-badge)
+[![Version](https://img.shields.io/github/v/release/klatka/nc-talk-bot-component?style=for-the-badge)](https://github.com/klatka/nc-talk-bot-component/releases/latest)
 [![codecov](https://codecov.io/github/klatka/nc-talk-bot-component/graph/badge.svg?token=FQHO5HV9UN)](https://codecov.io/github/klatka/nc-talk-bot-component)
 
 Custom component for Home Assistant to communicate between Home Assistant and Nextcloud Talk.
@@ -49,7 +49,7 @@ Create a bot in Nextcloud Talk (see [nextcloud docs](https://nextcloud-talk.read
   occ talk:bot:install -f response "<name>" "<shared_secret>" "<webhook_url>" "[<description>]"
   ```
 
-  Note: Although we don't need the feature to forward messages from the Nextcloud Talk chat to another system that can process the messages (webhook) to send messages from Home Assistant to Nextcloud Talk only, `webhook_url` must be provided in a valid format (e.g. http://127.0.0.1 or http://wedontcare.local).
+  Note: Although we don't need the feature to forward messages from the Nextcloud Talk chat to another system that can process the messages (webhook) to send messages from Home Assistant to Nextcloud Talk only, `webhook_url` must be provided in a valid format (e.g. <http://127.0.0.1> or <http://wedontcare.local>).
 
 - Get the id of the created bot:
 
