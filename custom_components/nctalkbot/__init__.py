@@ -49,7 +49,11 @@ async def handle_webhook(
     url = config[CONF_URL]
     secret = config[CONF_SHARED_SECRET]
 
-    if url != server:
+    # Normalize URLs by removing trailing slashes for comparison
+    normalized_url = url.rstrip("/")
+    normalized_server = server.rstrip("/")
+
+    if normalized_url != normalized_server:
         _LOGGER.error(
             "Error validating server: %s / %s. Maybe your Nextcloud instance is not configured properly.",
             url,
