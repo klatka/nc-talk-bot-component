@@ -19,8 +19,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          apt update -y
+          apt install -y libturbojpeg-dev
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
           pip install -r requirements.test.txt
 
       - name: Run pytest
