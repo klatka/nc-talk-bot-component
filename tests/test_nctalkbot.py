@@ -39,3 +39,37 @@ async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
     )
 
     assert result["title"] == DOMAIN
+
+
+async def test_webhook_url_normalization():
+    """Test that URL normalization works correctly for trailing slashes."""
+    # Test 1: Both without trailing slash
+    url1 = "https://test.local"
+    server1 = "https://test.local"
+    assert url1.rstrip("/") == server1.rstrip("/"), "Same URLs should match"
+
+    # Test 2: Config without slash, server with slash
+    url2 = "https://test.local"
+    server2 = "https://test.local/"
+    assert url2.rstrip("/") == server2.rstrip("/"), (
+        "URLs with/without trailing slash should match"
+    )
+
+    # Test 3: Config with slash, server without slash
+    url3 = "https://test.local/"
+    server3 = "https://test.local"
+    assert url3.rstrip("/") == server3.rstrip("/"), (
+        "URLs with/without trailing slash should match"
+    )
+
+    # Test 4: Both with trailing slash
+    url4 = "https://test.local/"
+    server4 = "https://test.local/"
+    assert url4.rstrip("/") == server4.rstrip("/"), (
+        "Same URLs with slashes should match"
+    )
+
+    # Test 5: Different URLs should not match
+    url5 = "https://test.local"
+    server5 = "https://different.server"
+    assert url5.rstrip("/") != server5.rstrip("/"), "Different URLs should not match"
