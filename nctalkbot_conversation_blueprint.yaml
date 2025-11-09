@@ -2,7 +2,7 @@ blueprint:
   name: Respond to messages from nctalkbot
   description: >-
     React to a specific `nctalkbot_webhook_received` event from the given room,
-    process the content with an conversation agent and
+    process the content with a conversation agent and
     send the response using the `notify.nctalkbot` service.
     The two-way communication method must be applied in order to use this blueprint.
   domain: automation
