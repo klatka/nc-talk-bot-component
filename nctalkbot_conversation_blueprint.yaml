@@ -1,0 +1,49 @@
+blueprint:
+  name: Respond to messages from nctalkbot
+  description: >-
+    React to a specific `nctalkbot_webhook_received` event from the given room,
+    process the content with a conversation agent and
+    send the response using the `notify.nctalkbot` service.
+    The two-way communication method must be applied in order to use this blueprint.
+  source_url: https://github.com/klatka/nc-talk-bot-component/blob/main/nctalkbot_conversation_blueprint.yaml
+  domain: automation
+  input:
+    room_token:
+      name: Room Token
+      description: The source and target room token.
+      selector:
+        text:
+          multiline: false
+    conversation_entity:
+      name: Agent ID
+      description: The conversation agent to use for processing the text.
+      selector:
+        entity:
+          domain: conversation
+
+variables:
+  room_token: !input room_token
+
+trigger:
+  - platform: event
+    event_type: nctalkbot_webhook_received
+
+condition:
+  - condition: template
+    value_template: >-
+      {{ trigger.event.data.type == 'Create' and
+         trigger.event.data.actor.type == 'Person' and
+         trigger.event.data.target.id == room_token }}
+
+action:
+  - action: conversation.process
+    response_variable: conversation_response
+    data:
+      text: >-
+        {{ trigger.event.data.object.rendered_content }}
+      agent_id: !input conversation_entity
+  - service: notify.nctalkbot
+    data:
+      message: |-
+        {{ conversation_response["response"].speech.plain.speech }}
+      target: !input room_token

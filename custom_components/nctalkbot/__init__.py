@@ -6,9 +6,10 @@ import json
 import logging
 
 from homeassistant.components import webhook
-from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_URL, CONF_WEBHOOK_ID
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_entry_flow
 from aiohttp.web import Request, Response
 from httpx import TimeoutException
@@ -95,6 +96,8 @@ async def handle_webhook(
 
     data["webhook_id"] = webhook_id
     hass.bus.async_fire(EVENT_RECEIVED, data)
+
+    return Response(status=200)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

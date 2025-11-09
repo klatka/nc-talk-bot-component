@@ -4,8 +4,8 @@ import os
 import sys
 import pytest
 
-from homeassistant.const import CONF_PLATFORM, CONF_NAME, CONF_URL
-from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
+from homeassistant.const import CONF_PLATFORM, CONF_NAME, CONF_URL, CONF_WEBHOOK_ID
+from homeassistant.components.notify.const import DOMAIN as NOTIFY_DOMAIN
 
 from custom_components.nctalkbot.const import (
     DOMAIN,
@@ -48,4 +48,6 @@ def config_data():
     """Fixture for a nctalkbot config flow."""
     return {
         CONF_URL: "https://test.local",
+        CONF_WEBHOOK_ID: "test-webhook-id",
+        CONF_SHARED_SECRET: "test-secret",
     }

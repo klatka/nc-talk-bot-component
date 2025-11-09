@@ -9,7 +9,6 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_URL, CONF_WEBHOOK_ID
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import (
     TextSelector,
     TextSelectorConfig,
@@ -45,7 +44,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """Handle a user initiated set up flow to create a webhook."""
         if self._async_current_entries():
             return self.async_abort(reason="already_configured")
@@ -72,6 +71,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
             webhook_id = async_generate_id()
+            webhook_url = ""
 
             if "cloud" in self.hass.config.components:
                 try:

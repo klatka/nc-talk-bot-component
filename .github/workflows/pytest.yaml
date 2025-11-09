@@ -19,16 +19,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update -y
-          sudo apt install -y libturbojpeg-dev
           python -m pip install --upgrade pip
           pip install -r requirements.test.txt
 
-      - name: Run pytest
+      - name: Test with pytest
         run: |
-          pytest --cov --cov-report=xml
+          pytest --cov --junitxml=junit.xml -o junit_family=legacy
 
-      - name: Upload results to Codecov
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
