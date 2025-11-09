@@ -163,7 +163,7 @@ Note: The bot must be assigned to your target room!
 
 ## React to message
 
-The webhook will be triggered whenever something happens in the Nextcloud Talk room (e.g. new message, reaction...).
+If you setup two-way communication your created webhook will be triggered whenever something happens in the Nextcloud Talk room (e.g. new message, reaction...).
 After verifying that this is a valid message from an authorized bot the event `nctalkbot_webhook_received` will be fired.
 
 The content of the fired event looks like this:
@@ -199,7 +199,16 @@ context:
 At this point, you can create plenty of automation for this webhook event ([see docs](https://www.home-assistant.io/docs/automation/trigger/#event-trigger)):
 
 - If the message is `open garage` -> open garage in Home Assistant
-- Feed assistants with the message to let them handle it
+- Feed assistants with the message to let them handle it or send the response back to the room (see [blueprint](#blueprint))
 - more
 
-<a href="https://www.buymeacoffee.com/klatka" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me a Coffee" height="41" width="174"></a>
+### Blueprint
+
+Import the blueprint and create an automation to
+react to a specific `nctalkbot_webhook_received` event from the given room,
+process the content with an conversation agent and
+send the response using the `notify.nctalkbot` service.
+
+The two-way communication method must be applied in order to use this blueprint.
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fklatka%2Fnc-talk-bot-component%2Fblob%2Fmain%2Fnctalkbot_conversation_blueprint.yaml)
