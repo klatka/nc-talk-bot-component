@@ -5,10 +5,8 @@ import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 
-from homeassistant.components.notify import (
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.components.notify.legacy import BaseNotificationService
 from homeassistant.const import CONF_URL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType

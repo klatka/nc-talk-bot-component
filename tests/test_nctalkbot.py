@@ -1,12 +1,16 @@
 """Test nctalkbot integration."""
 
-from homeassistant import config_entries
+from unittest.mock import AsyncMock, patch
+
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.setup import async_setup_component
+from homeassistant.const import CONF_URL, CONF_WEBHOOK_ID
+from homeassistant.components.notify.const import DOMAIN as NOTIFY_DOMAIN
 
-from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
+from custom_components.nctalkbot import handle_webhook
 from custom_components.nctalkbot.const import DOMAIN
 
 
@@ -17,28 +21,6 @@ async def test_setup(hass: HomeAssistant, config: ConfigType):
     await hass.async_block_till_done()
 
     assert hass.services.has_service(NOTIFY_DOMAIN, DOMAIN) is True
-
-
-async def test_flow_manual_configuration(hass: HomeAssistant, config_data):
-    """Test that config flow works."""
-    service_data = {
-        "internal_url": "http://hass.local:8123",
-    }
-
-    await hass.config.async_update(**service_data)
-
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
-    )
-
-    assert result["step_id"] == config_entries.SOURCE_USER
-    assert result["handler"] == DOMAIN
-
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input=config_data
-    )
-
-    assert result["title"] == DOMAIN
 
 
 async def test_webhook_url_normalization():
@@ -73,3 +55,30 @@ async def test_webhook_url_normalization():
     url5 = "https://test.local"
     server5 = "https://different.server"
     assert url5.rstrip("/") != server5.rstrip("/"), "Different URLs should not match"
+
+
+async def test_config_entry_setup_registers_webhook(hass: HomeAssistant, config_data):
+    """Ensure config entry setup registers the webhook."""
+    entry = MockConfigEntry(domain=DOMAIN, data=config_data, title="nctalkbot")
+    entry.add_to_hass(hass)
+
+    with patch(
+        "custom_components.nctalkbot.check_capability",
+        AsyncMock(return_value=True),
+    ) as mock_check_capability, patch(
+        "custom_components.nctalkbot.webhook.async_register"
+    ) as mock_register:
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+
+    mock_check_capability.assert_awaited_once_with(
+        config_data[CONF_URL], "bots-v1"
+    )
+    mock_register.assert_called_once_with(
+        hass,
+        DOMAIN,
+        DOMAIN,
+        config_data[CONF_WEBHOOK_ID],
+        handle_webhook,
+        allowed_methods=["POST"],
+    )
