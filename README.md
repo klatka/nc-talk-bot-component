@@ -163,7 +163,7 @@ Note: The bot must be assigned to your target room!
 
 ## React to message
 
-If you setup two-way communication your created webhook will be triggered whenever something happens in the Nextcloud Talk room (e.g. new message, reaction...).
+If you set up two-way communication your created webhook will be triggered whenever something happens in the Nextcloud Talk room (e.g. new message, reaction...).
 After verifying that this is a valid message from an authorized bot the event `nctalkbot_webhook_received` will be fired.
 
 The content of the fired event looks like this:
