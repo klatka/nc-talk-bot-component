@@ -91,6 +91,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 webhook_url = async_generate_url(hass=self.hass, webhook_id=webhook_id)
 
             description_placeholder["webhook_url"] = webhook_url
+            description_placeholder["documentation_url"] = (
+                "https://github.com/klatka/nc-talk-bot-component"
+            )
 
             try:
                 await validate_config(user_input)

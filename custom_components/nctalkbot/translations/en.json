@@ -11,7 +11,7 @@
       "unknown": "Unexpected error"
     },
     "create_entry": {
-      "default": "Please create a bot in your Nextcloud instance.\n\nFill in the following info:\n\n- Webhook URL: `{webhook_url}`\n- Shared secret: `{shared_secret}`\n\nSee [the documentation](https://github.com/klatka/nc-talk-bot-component) on how to configure automations to handle incoming data."
+      "default": "Please create a bot in your Nextcloud instance.\n\nFill in the following info:\n\n- Webhook URL: `{webhook_url}`\n- Shared secret: `{shared_secret}`\n\nSee [the documentation]({documentation_url}) on how to configure automations to handle incoming data."
     },
     "step": {
       "user": {
