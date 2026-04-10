@@ -146,3 +146,87 @@ def test_render_content_replaces_placeholders():
 def test_render_content_invalid_json():
     """Invalid JSON should return the fallback string."""
     assert render_content("not json") == "Invalid JSON content"
+
+
+async def test_handle_webhook_missing_object_sets_empty_rendered_content(
+    hass: HomeAssistant,
+):
+    """rendered_content should be empty string when object key is absent."""
+    secret = "secret"
+    hass.data[DOMAIN] = {CONF_URL: "https://test.local", CONF_SHARED_SECRET: secret}
+    events = async_capture_events(hass, EVENT_RECEIVED)
+
+    random_token = "abc123"
+    body = json.dumps({"type": "Create"})
+    signature = generate_signature(body, secret, random_token).hexdigest()
+    request = SimpleNamespace(
+        headers={
+            "X-NEXTCLOUD-TALK-BACKEND": "https://test.local/",
+            "X-NEXTCLOUD-TALK-RANDOM": random_token,
+            "X-NEXTCLOUD-TALK-SIGNATURE": signature,
+        }
+    )
+    request.text = AsyncMock(return_value=body)
+
+    response = await handle_webhook(hass, "hook-id", cast(Request, request))
+    await hass.async_block_till_done()
+
+    assert response.status == 200
+    assert len(events) == 1
+    assert events[0].data["rendered_content"] == ""
+
+
+async def test_handle_webhook_null_content_sets_empty_rendered_content(
+    hass: HomeAssistant,
+):
+    """rendered_content should be empty string when object.content is null."""
+    secret = "secret"
+    hass.data[DOMAIN] = {CONF_URL: "https://test.local", CONF_SHARED_SECRET: secret}
+    events = async_capture_events(hass, EVENT_RECEIVED)
+
+    random_token = "abc123"
+    body = json.dumps({"object": {"content": None}})
+    signature = generate_signature(body, secret, random_token).hexdigest()
+    request = SimpleNamespace(
+        headers={
+            "X-NEXTCLOUD-TALK-BACKEND": "https://test.local/",
+            "X-NEXTCLOUD-TALK-RANDOM": random_token,
+            "X-NEXTCLOUD-TALK-SIGNATURE": signature,
+        }
+    )
+    request.text = AsyncMock(return_value=body)
+
+    response = await handle_webhook(hass, "hook-id", cast(Request, request))
+    await hass.async_block_till_done()
+
+    assert response.status == 200
+    assert len(events) == 1
+    assert events[0].data["rendered_content"] == ""
+
+
+async def test_handle_webhook_empty_string_content_sets_empty_rendered_content(
+    hass: HomeAssistant,
+):
+    """rendered_content should be empty string when object.content is empty string."""
+    secret = "secret"
+    hass.data[DOMAIN] = {CONF_URL: "https://test.local", CONF_SHARED_SECRET: secret}
+    events = async_capture_events(hass, EVENT_RECEIVED)
+
+    random_token = "abc123"
+    body = json.dumps({"object": {"content": ""}})
+    signature = generate_signature(body, secret, random_token).hexdigest()
+    request = SimpleNamespace(
+        headers={
+            "X-NEXTCLOUD-TALK-BACKEND": "https://test.local/",
+            "X-NEXTCLOUD-TALK-RANDOM": random_token,
+            "X-NEXTCLOUD-TALK-SIGNATURE": signature,
+        }
+    )
+    request.text = AsyncMock(return_value=body)
+
+    response = await handle_webhook(hass, "hook-id", cast(Request, request))
+    await hass.async_block_till_done()
+
+    assert response.status == 200
+    assert len(events) == 1
+    assert events[0].data["rendered_content"] == ""

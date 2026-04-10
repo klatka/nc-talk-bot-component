@@ -33,14 +33,16 @@ condition:
     value_template: >-
       {{ trigger.event.data.type == 'Create' and
          trigger.event.data.actor.type == 'Person' and
-         trigger.event.data.target.id == room_token }}
+         trigger.event.data.target.id == room_token and
+         trigger.event.data.rendered_content is not none and
+         trigger.event.data.rendered_content | trim != '' }}
 
 action:
   - action: conversation.process
     response_variable: conversation_response
     data:
       text: >-
-        {{ trigger.event.data.object.rendered_content }}
+        {{ trigger.event.data.rendered_content }}
       agent_id: !input conversation_entity
   - service: notify.nctalkbot
     data:
