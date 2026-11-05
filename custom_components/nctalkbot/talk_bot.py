@@ -1,15 +1,30 @@
 """Nextcloud Talk Bot class."""
 
+import asyncio
 import logging
 import hashlib
 import hmac
 import os
 import json
 import secrets
+import ssl
 import xml.etree.ElementTree as ET
+from functools import lru_cache
 import httpx
 
 _LOGGER = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=1)
+def _create_default_ssl_context() -> ssl.SSLContext:
+    """Create and cache the default SSL context."""
+    return ssl.create_default_context()
+
+
+async def _async_get_default_ssl_context() -> ssl.SSLContext:
+    """Create the default SSL context outside of the event loop."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, _create_default_ssl_context)
 
 
 class TalkBot:
@@ -56,7 +71,8 @@ class TalkBot:
 
         _LOGGER.debug("Sending %s with header %s to %s", data, headers, url)
 
-        async with httpx.AsyncClient() as client:
+        ssl_context = await _async_get_default_ssl_context()
+        async with httpx.AsyncClient(verify=ssl_context) as client:
             r = await client.post(
                 url=url,
                 json=data,
@@ -75,7 +91,8 @@ async def check_capability(nc_url: str, capability: str, timeout=5):
         "OCS-APIRequest": "true",
     }
 
-    async with httpx.AsyncClient() as client:
+    ssl_context = await _async_get_default_ssl_context()
+    async with httpx.AsyncClient(verify=ssl_context) as client:
         r = await client.get(
             url=capabilities_url,
             headers=headers,

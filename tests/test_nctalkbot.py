@@ -23,7 +23,12 @@ from custom_components.nctalkbot.const import (
     CONF_SHARED_SECRET,
     EVENT_RECEIVED,
 )
-from custom_components.nctalkbot.talk_bot import generate_signature, render_content
+from custom_components.nctalkbot.talk_bot import (
+    TalkBot,
+    check_capability,
+    generate_signature,
+    render_content,
+)
 
 
 async def test_setup(hass: HomeAssistant, config: ConfigType):
@@ -230,3 +235,66 @@ async def test_handle_webhook_empty_string_content_sets_empty_rendered_content(
     assert response.status == 200
     assert len(events) == 1
     assert events[0].data["rendered_content"] == ""
+
+
+async def test_check_capability_uses_ssl_context_from_executor():
+    """check_capability should pass executor-created SSL context to AsyncClient."""
+    ssl_context = object()
+    xml = b"<ocs><meta/><data><capabilities><element>bots-v1</element></capabilities></data></ocs>"
+
+    class MockClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, **kwargs):
+            return SimpleNamespace(status_code=200, content=xml)
+
+    with (
+        patch(
+            "custom_components.nctalkbot.talk_bot._async_get_default_ssl_context",
+            AsyncMock(return_value=ssl_context),
+        ) as mock_ssl_context,
+        patch(
+            "custom_components.nctalkbot.talk_bot.httpx.AsyncClient"
+        ) as mock_async_client,
+    ):
+        mock_async_client.return_value = MockClient()
+        assert await check_capability("https://test.local", "bots-v1") is True
+
+    mock_ssl_context.assert_awaited_once()
+    mock_async_client.assert_called_once_with(verify=ssl_context)
+
+
+async def test_async_send_message_uses_ssl_context_from_executor():
+    """async_send_message should pass executor-created SSL context to AsyncClient."""
+    ssl_context = object()
+
+    class MockClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def post(self, **kwargs):
+            return SimpleNamespace(status_code=200)
+
+    with (
+        patch(
+            "custom_components.nctalkbot.talk_bot._async_get_default_ssl_context",
+            AsyncMock(return_value=ssl_context),
+        ) as mock_ssl_context,
+        patch(
+            "custom_components.nctalkbot.talk_bot.httpx.AsyncClient"
+        ) as mock_async_client,
+    ):
+        mock_async_client.return_value = MockClient()
+        bot = TalkBot("https://test.local", "secret")
+        response = await bot.async_send_message("hello", token="room")
+
+    assert response.status_code == 200
+    mock_ssl_context.assert_awaited_once()
+    mock_async_client.assert_called_once_with(verify=ssl_context)
