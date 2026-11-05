@@ -17,6 +17,7 @@ You can choose if you want to communicate one way or in both ways.
 
 - Nextcloud >= 27.1
 - Nextcloud Talk >= 17.1
+- Python 3.14.2 for local development and tests
 
 The base endpoint is: `/ocs/v2.php/apps/spreed/api/v1` (requires the bots-v1 capability - available since Nextcloud 27.1).
 
