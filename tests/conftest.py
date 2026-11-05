@@ -16,15 +16,7 @@ from custom_components.nctalkbot.const import (
 
 if "HA_CLONE" in os.environ:
     # Rewire the testing package to the cloned test modules
-    sys.modules["pytest_homeassistant_custom_component"] = __import__("tests")
-
-
-@pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(
-    enable_custom_integrations: None,
-):  # pylint: disable=unused-argument
-    """Enable custom integrations."""
-    yield
+    sys.modules["pytest_homeassistant"] = __import__("tests")
 
 
 @pytest.fixture

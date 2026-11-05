@@ -1,2 +1,3 @@
-pytest-homeassistant-custom-component
+homeassistant==2026.11.0
+pytest-homeassistant @ https://github.com/home-assistant/core/archive/refs/tags/2026.11.0.tar.gz#subdirectory=packages/pytest-homeassistant
 pytest-cov

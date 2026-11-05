@@ -12,7 +12,7 @@ from homeassistant.setup import async_setup_component
 from homeassistant.const import CONF_URL, CONF_WEBHOOK_ID
 from homeassistant.components.notify.const import DOMAIN as NOTIFY_DOMAIN
 
-from pytest_homeassistant_custom_component.common import (
+from pytest_homeassistant.common import (
     MockConfigEntry,
     async_capture_events,
 )

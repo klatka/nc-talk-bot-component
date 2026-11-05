@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Adjust version number
         shell: bash
         run: |
@@ -26,6 +26,6 @@ jobs:
           zip nctalkbot.zip -r ./
 
       - name: Upload the zip file to the release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ${{ github.workspace }}/custom_components/nctalkbot/nctalkbot.zip
